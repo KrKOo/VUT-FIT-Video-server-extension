@@ -1,5 +1,3 @@
-
-
 // Returns the ISO week of the date.
 Date.prototype.getWeek = function () {
     var date = new Date(this.getTime());
@@ -13,25 +11,11 @@ Date.prototype.getWeek = function () {
         - 3 + (week1.getDay() + 6) % 7) / 7);
 }
 
-const getCoursePage = (course) => {
-    return fetch(`https://www.fit.vut.cz/study/course/${course}/.cs`)
-        .then(response => response.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            return doc;
-        })
-}
-
 const getLectureTitles = (course) => {
-    return getCoursePage(course)
-        .then(page => {
-            const planList = page.querySelectorAll('.b-detail__content ol li')
-            let lectureTitles = []
-            planList.forEach(planElement => {
-                lectureTitles.push(planElement.innerText);
-            })
-            return lectureTitles;
+    return fetch(`https://fitscrap.herokuapp.com/lecture-titles/${course}`)
+        .then(response => response.json())
+        .catch(e => {
+            console.error(e);
         })
 }
 
@@ -56,10 +40,10 @@ const getDateFromLectureString = (str) => {
 }
 
 const insertLectureNumbering = async (course) => {
+    const lectureTitles = await getLectureTitles(course) || [];
 
-    const lectureTitles = await getLectureTitles(course);
-
-    const lectureList = document.querySelector("ul");
+    // get the last <ul> on the page
+    const lectureList = Array.from(document.querySelectorAll("ul")).pop();
     const lectures = lectureList.children;
 
     let prevWeek = -1;
@@ -70,19 +54,19 @@ const insertLectureNumbering = async (course) => {
         const splitDate = getDateFromLectureString(lectureText);
 
         // (Y, M - 1, D) - JS counts months from 0
-        const date = new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
+        const date = new Date(splitDate[2], splitDate[1] - 1, splitDate[0]);
         const week = date.getWeek();
 
         if (firstSchoolWeek === -1) {
-            firstSchoolWeek = week
+            firstSchoolWeek = week;
         };
 
         const schoolWeek = week - firstSchoolWeek + 1;
 
-        if (prevWeek !== week) {
+        if (prevWeek !== week && !isNaN(week)) {
             let titleElement = document.createElement("h2")
 
-            titleElement.innerHTML = "Week " + schoolWeek + ((lectureTitles.length) ? " - " + lectureTitles[schoolWeek - 1] : "");
+            titleElement.innerHTML = "Week " + schoolWeek + ((lectureTitles[schoolWeek - 1]) ? " - " + lectureTitles[schoolWeek - 1] : "");
 
             lecture.parentElement.insertBefore(titleElement, lecture);
             prevWeek = week;
@@ -90,17 +74,13 @@ const insertLectureNumbering = async (course) => {
     });
 }
 
-
-
-const pageNavigation = document.querySelectorAll('tbody tr:nth-child(3) td:nth-child(2) > a')
-const pageNavigationLevel = pageNavigation.length
-
+const pageNavigation = document.querySelectorAll('tbody tr:nth-child(3) td:nth-child(2) > a');
+const pageNavigationLevel = pageNavigation.length;
 
 if (pageNavigationLevel == 3) {
-    const courseName = document.querySelector('tbody tr:nth-child(3) td:nth-child(2) > b').innerText
+    const courseName = document.querySelector('tbody tr:nth-child(3) td:nth-child(2) > b').innerText;
     const courseID = courseName.substring(0, courseName.indexOf(' '));
 
-    console.log(courseID);
     insertLectureNumbering(courseID);
 }
 
