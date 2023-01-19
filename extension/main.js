@@ -1,3 +1,17 @@
+// ==UserScript==
+// @name         VUT FIT video server addon
+// @namespace    https://github.com/KrKOo/VUT-FIT-Video-server-extension/
+// @version      1.0.4
+// @description  VUT FIT video server addon for showing lecture titles and week numbering
+// @author       KrKOo & Kiznoh
+// @match        https://video1.fit.vutbr.cz/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=video1.fit.vutbr.cz
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
 // Returns the ISO week of the date.
 Date.prototype.getWeek = function () {
     var date = new Date(this.getTime());
@@ -12,7 +26,7 @@ Date.prototype.getWeek = function () {
 }
 
 const getLectureTitles = (course) => {
-    return fetch(`https://fitscrap.herokuapp.com/lecture-titles/${course}`)
+    return fetch(`https://lesson-titles-videoserver-fit-vut.cunt.cz/lecture-titles/${course}`)
         .then(response => response.json())
         .catch(e => {
             console.error(e);
@@ -66,7 +80,7 @@ const insertLectureNumbering = async (course) => {
         if (prevWeek !== week && !isNaN(week)) {
             let titleElement = document.createElement("h2")
 
-            titleElement.innerHTML = "Week " + schoolWeek + ((lectureTitles[schoolWeek - 1]) ? " - " + lectureTitles[schoolWeek - 1] : "");
+            titleElement.textContent = "Week " + schoolWeek + ((lectureTitles[schoolWeek - 1]) ? " - " + lectureTitles[schoolWeek - 1] : "");
 
             lecture.parentElement.insertBefore(titleElement, lecture);
             prevWeek = week;
@@ -84,3 +98,5 @@ if (pageNavigationLevel == 3) {
     insertLectureNumbering(courseID);
 }
 
+
+})();
