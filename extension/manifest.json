@@ -1,13 +1,25 @@
 {
-    "manifest_version": 2,
-    "version": "1.0.1",
-    "name": "VUT FIT video server addon",
-    "description": "VUT FIT video server addon for showing lecture titles and week numbering",
-    "content_scripts": [
-        {
-            "matches": ["https://video1.fit.vutbr.cz/*"],
-            "js": ["main.js"]
-        }
-    ],
-    "permissions": ["*://fitscrap.herokuapp.com/*"]
+  "manifest_version": 2,
+  "version": "1.0.5",
+  "name": "VUT FIT video server addon",
+  "description": "VUT FIT video server addon for showing lecture titles and week numbering",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://video1.fit.vutbr.cz/*"
+      ],
+      "js": [
+        "videoserver.user.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "*://lesson-titles-videoserver-fit-vut.cunt.cz/*"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "update_url": "https://lesson-titles-videoserver-fit-vut.cunt.cz/ext/updates.json",
+      "id": "{50664c29-a467-482d-8371-b68947289b35}"
+    }
+  }
 }
