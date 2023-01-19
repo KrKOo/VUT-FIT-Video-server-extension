@@ -1,0 +1,18 @@
+version: '3.8'
+
+networks:
+  outside:
+    external:
+      name: outside
+volumes:
+  fitcache:
+
+services:
+  scraper:
+    build: .
+    restart: always
+    networks:
+      - outside
+    volumes:
+      - fitcache:/usr/src/cache
+      - ./ext:/usr/src/ext
