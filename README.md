@@ -7,7 +7,7 @@ VUT FIT Video server extension
 To install the extension, visit [this website](https://lesson-titles-videoserver-fit-vut.cunt.cz/ext/ext.html) and click the install link.
 
 ### Chrome & Other
-Using an extension like Greasemonkey or [Tampermonkey](https://www.tampermonkey.net/), install [this](raw/main/extension/main.js) userscript.
+Using an extension like Greasemonkey or [Tampermonkey](https://www.tampermonkey.net/), install [this](extension/videoserver.user.js) userscript.
 
 ## Running the API server
 
