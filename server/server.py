@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 import requests_cache
@@ -7,7 +7,7 @@ import requests_cache
 from Scrapper.scrapper import getLectureTitles
 
 load_dotenv()
-requests_cache.install_cache("requests_cache", backend="sqlite")
+requests_cache.install_cache("/usr/src/cache", backend='filesystem', serializer='json')
 
 app = Flask(__name__)
 CORS(app)  # enable CORS for all routes
@@ -22,6 +22,10 @@ def root():
 def lectureTitles(courseID):
     titles = getLectureTitles(courseID)
     return jsonify(titles)
+
+@app.route('/ext/<path:path>')
+def send_report(path):
+    return send_from_directory('/usr/src/ext', path)
 
 
 if __name__ == "__main__":
